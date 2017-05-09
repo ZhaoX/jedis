@@ -1,6 +1,6 @@
 对错误处理做一些修改，以支持在不停线上服务的情况下，给redis加上密码认证：
 1. 忽略 (error) ERR Client sent AUTH, but no password is set；
-2. 发生(error) NOAUTH Authentication required 时，将当前connection职位broken，从而将连接踢出连接池。
+2. 发生(error) NOAUTH Authentication required时，将当前connection置为broken，从而将连接踢出连接池。
 
 已经做了修改的代码分支：
 2.8
