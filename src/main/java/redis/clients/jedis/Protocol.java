@@ -21,6 +21,8 @@ public final class Protocol {
   private static final String MOVED_RESPONSE = "MOVED";
   private static final String CLUSTERDOWN_RESPONSE = "CLUSTERDOWN";
   private static final String BUSY_RESPONSE = "BUSY";
+  private static final String REDUNDANT_AUTH = "ERR Client sent AUTH";
+  private static final String NO_AUTH = "NOAUTH";
 
   public static final String DEFAULT_HOST = "localhost";
   public static final int DEFAULT_PORT = 6379;
@@ -119,6 +121,14 @@ public final class Protocol {
       throw new JedisClusterException(message);
     } else if (message.startsWith(BUSY_RESPONSE)) {
       throw new JedisBusyException(message);
+    } else if (message.startsWith(REDUNDANT_AUTH)) {
+      // (error) ERR Client sent AUTH, but no password is set.
+      // It's ok.
+      return;
+    } else if (message.startsWith(NO_AUTH)) {
+      // (error)  NOAUTH Authentication required.
+      // Let the connection broken.
+      throw new JedisConnectionException(message);
     }
     throw new JedisDataException(message);
   }
